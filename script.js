@@ -1,178 +1,203 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // --- 1. SYSTEM BOOT SEQUENCE ---
+    // --- 1. PREMIUM BOOT SEQUENCE ---
     const gate = document.getElementById("gate-screen");
-    const progressFill = document.querySelector(".progress-fill");
+    const progressFill = document.querySelector(".auth-fill");
     const bootSound = document.getElementById("boot-sound");
-
     let isUnlocked = false;
 
-    // Unlock function
-    const unlockSystem = () => {
+    // Lock scrolling initially
+    document.body.style.overflow = "hidden";
+
+    const triggerUnlock = () => {
         if (isUnlocked) return;
         isUnlocked = true;
         
-        // Play sound if possible
-        bootSound.volume = 0.3;
-        bootSound.play().catch(e => console.log("Audio requires interaction"));
+        bootSound.volume = 0.2;
+        bootSound.play().catch(() => {}); // Handle auto-play policies silently
 
-        // Progress bar animation
+        document.querySelector('.auth-subtitle').innerHTML = "DECRYPTING_MODULES...";
+        document.querySelector('.auth-subtitle').classList.remove('blink');
+        
         progressFill.style.width = "100%";
 
         setTimeout(() => {
             gate.style.opacity = "0";
             setTimeout(() => {
                 gate.style.display = "none";
-                initTypewriter(); // Start typing only after boot
-            }, 800);
+                document.body.style.overflow = "auto";
+                initTypewriter();
+                // Trigger hero entrance
+                document.querySelector('.reveal-hero').classList.add('active');
+            }, 1000);
         }, 1500);
     };
 
-    // Listeners for unlock
-    document.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") unlockSystem();
-    });
-    gate.addEventListener("click", unlockSystem);
+    document.addEventListener("keydown", (e) => { if (e.key === "Enter") triggerUnlock(); });
+    gate.addEventListener("click", triggerUnlock);
 
-    // --- 2. ADVANCED CURSOR SYSTEM ---
-    const cursorDot = document.getElementById("cursor-dot");
+    // --- 2. TACTICAL RETICLE & GLOW ENGINE ---
+    const cursorCore = document.getElementById("cursor-core");
     const cursorRing = document.getElementById("cursor-ring");
     
-    let mouseX = 0, mouseY = 0;
-    let ringX = 0, ringY = 0;
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let ringX = targetX;
+    let ringY = targetY;
 
+    // Track mouse coordinates & update CSS vars for localized glow
     document.addEventListener("mousemove", (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+        targetX = e.clientX;
+        targetY = e.clientY;
         
-        cursorDot.style.left = mouseX + "px";
-        cursorDot.style.top = mouseY + "px";
+        // Instant update for the core dot
+        cursorCore.style.left = targetX + "px";
+        cursorCore.style.top = targetY + "px";
+
+        // Global variables for ambient glow
+        document.documentElement.style.setProperty('--mouse-x', `${targetX}px`);
+        document.documentElement.style.setProperty('--mouse-y', `${targetY + window.scrollY}px`);
     });
 
-    const animateCursor = () => {
-        ringX += (mouseX - ringX) * 0.15;
-        ringY += (mouseY - ringY) * 0.15;
+    // Smooth Lerp for the outer ring (Inertia effect)
+    const renderCursor = () => {
+        ringX += (targetX - ringX) * 0.15; // Higher = tighter, Lower = looser
+        ringY += (targetY - ringY) * 0.15;
         
         cursorRing.style.left = ringX + "px";
         cursorRing.style.top = ringY + "px";
         
-        requestAnimationFrame(animateCursor);
+        requestAnimationFrame(renderCursor);
     };
-    animateCursor();
+    renderCursor();
 
-    // Hover Intelligence
-    const interactables = document.querySelectorAll("a, button, .cyber-card, .log-entry");
-    
+    // Intelligent Hover States
+    const interactables = document.querySelectorAll("a, button, .interactive-card, .log-node");
     interactables.forEach(el => {
-        el.addEventListener("mouseenter", () => {
-            document.body.classList.add("hovering");
-        });
-        el.addEventListener("mouseleave", () => {
-            document.body.classList.remove("hovering");
+        el.addEventListener("mouseenter", () => document.body.classList.add("hover-active"));
+        el.addEventListener("mouseleave", () => document.body.classList.remove("hover-active"));
+    });
+
+    // --- 3. DYNAMIC CARD SPOTLIGHT (Glassmorphism Edge Tracing) ---
+    const cards = document.querySelectorAll('.interactive-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
         });
     });
 
-    // --- 3. MATRIX RAIN CANVAS ---
+    // --- 4. HERO PARALLAX ---
+    const heroConsole = document.querySelector('.hero-glass-console');
+    document.addEventListener('mousemove', e => {
+        if(!heroConsole) return;
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 100;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 100;
+        heroConsole.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    });
+
+    // --- 5. SUBTLE MATRIX DEPTH ---
     const canvas = document.getElementById("matrix-canvas");
     const ctx = canvas.getContext("2d");
-
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
 
     window.addEventListener("resize", () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
     });
 
-    const cols = Math.floor(width / 20);
+    const cols = Math.floor(w / 30); // Very sparse
     const ypos = Array(cols).fill(0);
 
-    const matrixDraw = () => {
-        ctx.fillStyle = "rgba(5, 5, 5, 0.05)";
-        ctx.fillRect(0, 0, width, height);
+    const drawMatrix = () => {
+        ctx.fillStyle = "rgba(2, 4, 10, 0.15)"; // High fade for subtlety
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = "#00f0ff";
+        ctx.font = "10px 'JetBrains Mono'";
 
-        ctx.fillStyle = "#00ff41";
-        ctx.font = "14px 'JetBrains Mono'";
-
-        ypos.forEach((y, ind) => {
+        ypos.forEach((y, i) => {
             const text = String.fromCharCode(Math.random() * 128);
-            const x = ind * 20;
+            const x = i * 30;
             ctx.fillText(text, x, y);
-            
-            if (y > 100 + Math.random() * 10000) ypos[ind] = 0;
-            else ypos[ind] = y + 20;
+            if (y > 100 + Math.random() * 10000) ypos[i] = 0;
+            else ypos[i] = y + 30;
         });
     };
-    setInterval(matrixDraw, 50);
+    setInterval(drawMatrix, 70); // Slow, cinematic trickle
 
-    // --- 4. TYPEWRITER EFFECT ---
-    const titles = ["Red Team Operator", "GenAI Security", "CEH Master", "AppSec Engineer"];
-    let titleIndex = 0;
-    let charIndex = 0;
+    // --- 6. CINEMATIC TYPEWRITER ---
+    const roles = ["Red_Team_Operator", "GenAI_Security_Spec", "AppSec_Engineer", "CEH_Master"];
+    let roleIdx = 0;
+    let charIdx = 0;
     let isDeleting = false;
-    const typeText = document.getElementById("typing-text");
+    const typeElement = document.getElementById("typing-text");
 
-    function initTypewriter() {
-        const currentTitle = titles[titleIndex];
+    const initTypewriter = () => {
+        const currentRole = roles[roleIdx];
         
         if (isDeleting) {
-            typeText.textContent = currentTitle.substring(0, charIndex - 1);
-            charIndex--;
+            typeElement.textContent = currentRole.substring(0, charIdx - 1);
+            charIdx--;
         } else {
-            typeText.textContent = currentTitle.substring(0, charIndex + 1);
-            charIndex++;
+            typeElement.textContent = currentRole.substring(0, charIdx + 1);
+            charIdx++;
         }
 
-        let typeSpeed = isDeleting ? 40 : 80;
+        let speed = isDeleting ? 30 : 60;
 
-        if (!isDeleting && charIndex === currentTitle.length) {
-            typeSpeed = 2000;
+        if (!isDeleting && charIdx === currentRole.length) {
+            speed = 2500; // Hold full text
             isDeleting = true;
-        } else if (isDeleting && charIndex === 0) {
+        } else if (isDeleting && charIdx === 0) {
             isDeleting = false;
-            titleIndex = (titleIndex + 1) % titles.length;
-            typeSpeed = 200;
+            roleIdx = (roleIdx + 1) % roles.length;
+            speed = 300; // Pause before next word
         }
 
-        setTimeout(initTypewriter, typeSpeed);
-    }
+        setTimeout(initTypewriter, speed);
+    };
 
-    // --- 5. SCROLL REVEAL OBSERVER ---
-    const observer = new IntersectionObserver((entries) => {
+    // --- 7. ELEGANT SCROLL REVEAL OBSERVER ---
+    const observerOptions = {
+        root: null,
+        rootMargin: "0px 0px -80px 0px", // Trigger when 80px into viewport
+        threshold: 0.1
+    };
+
+    const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add("active");
+                observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1 });
+    }, observerOptions);
 
-    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+    document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
 
-    // --- 6. SCRAMBLE TEXT EFFECT ---
+    // --- 8. INTELLIGENT SCRAMBLE TEXT ---
     const scrambleElements = document.querySelectorAll(".scramble-text");
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$";
 
-    scrambleElements.forEach(header => {
-        header.addEventListener("mouseenter", event => {
-            let iteration = 0;
-            const originalText = event.target.innerText;
+    scrambleElements.forEach(el => {
+        el.addEventListener("mouseenter", e => {
+            let iterations = 0;
+            const original = e.target.dataset.text || e.target.innerText;
+            if(!e.target.dataset.text) e.target.dataset.text = original; // Store original
             
             const interval = setInterval(() => {
-                event.target.innerText = originalText
-                    .split("")
-                    .map((letter, index) => {
-                        if(index < iteration) {
-                            return originalText[index];
-                        }
-                        return letters[Math.floor(Math.random() * 36)];
-                    })
-                    .join("");
+                e.target.innerText = original.split("").map((letter, i) => {
+                    if(i < iterations) return original[i];
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join("");
                 
-                if(iteration >= originalText.length){ 
-                    clearInterval(interval);
-                }
-                
-                iteration += 1 / 3;
+                if(iterations >= original.length) clearInterval(interval);
+                iterations += 1 / 3; // Decode speed
             }, 30);
         });
     });
