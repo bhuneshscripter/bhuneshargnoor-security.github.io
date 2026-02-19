@@ -1,3 +1,12 @@
+// 🔐 GLOBAL CONFIGURATION (DEFINE BOTH VALUES ONLY ONCE)
+// Paste your Supabase Project URL and Publishable Key below.
+// ⚠️ Do not use service_role key on client side
+// 🔐 Define Supabase credentials only once here
+const CONFIG = {
+    SUPABASE_URL: "https://uicxnlfulmnpragakjkt.supabase.co",
+    SUPABASE_PUBLISHABLE_KEY: "sb_publishable_V-rKqlVrbUKlFquwDq83oA_Ai6uIu33"
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     
     // --- UTILITY: Check for Touch Device ---
@@ -16,28 +25,38 @@ document.addEventListener("DOMContentLoaded", () => {
         if (isUnlocked) return;
         isUnlocked = true;
         
-        bootSound.volume = 0.2;
-        bootSound.play().catch(() => {}); // Handle auto-play policies silently
+        if (bootSound) {
+            bootSound.volume = 0.2;
+            bootSound.play().catch(() => {
+                console.log("Audio autoplay restricted by browser.");
+            });
+        }
 
-        document.querySelector('.auth-subtitle').innerHTML = "DECRYPTING_MODULES...";
-        document.querySelector('.auth-subtitle').classList.remove('blink');
+        const subtitle = document.querySelector('.auth-subtitle');
+        if (subtitle) {
+            subtitle.innerHTML = "DECRYPTING_MODULES...";
+            subtitle.classList.remove('blink');
+        }
         
-        progressFill.style.width = "100%";
+        if (progressFill) progressFill.style.width = "100%";
 
         setTimeout(() => {
-            gate.style.opacity = "0";
+            if (gate) gate.style.opacity = "0";
             setTimeout(() => {
-                gate.style.display = "none";
+                if (gate) gate.style.display = "none";
                 document.body.style.overflow = "auto";
                 initTypewriter();
-                document.querySelector('.reveal-hero').classList.add('active');
+                const heroReveal = document.querySelector('.reveal-hero');
+                if (heroReveal) heroReveal.classList.add('active');
             }, 800);
         }, 1200);
     };
 
     document.addEventListener("keydown", (e) => { if (e.key === "Enter") triggerUnlock(); });
-    gate.addEventListener("click", triggerUnlock);
-    gate.addEventListener("touchstart", triggerUnlock, {passive: true});
+    if (gate) {
+        gate.addEventListener("click", triggerUnlock);
+        gate.addEventListener("touchstart", triggerUnlock, {passive: true});
+    }
 
     // --- 2. TACTICAL RETICLE & GLOW ENGINE (Desktop Only) ---
     if (!isTouchDevice) {
@@ -53,8 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
             targetX = e.clientX;
             targetY = e.clientY;
             
-            cursorCore.style.left = targetX + "px";
-            cursorCore.style.top = targetY + "px";
+            if (cursorCore) {
+                cursorCore.style.left = targetX + "px";
+                cursorCore.style.top = targetY + "px";
+            }
 
             document.documentElement.style.setProperty('--mouse-x', `${targetX}px`);
             document.documentElement.style.setProperty('--mouse-y', `${targetY + window.scrollY}px`);
@@ -64,8 +85,10 @@ document.addEventListener("DOMContentLoaded", () => {
             ringX += (targetX - ringX) * 0.15;
             ringY += (targetY - ringY) * 0.15;
             
-            cursorRing.style.left = ringX + "px";
-            cursorRing.style.top = ringY + "px";
+            if (cursorRing) {
+                cursorRing.style.left = ringX + "px";
+                cursorRing.style.top = ringY + "px";
+            }
             
             requestAnimationFrame(renderCursor);
         };
@@ -92,12 +115,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // --- 4. HERO PARALLAX ---
         const heroConsole = document.querySelector('.hero-glass-console');
-        document.addEventListener('mousemove', e => {
-            if(!heroConsole) return;
-            const xAxis = (window.innerWidth / 2 - e.pageX) / 100;
-            const yAxis = (window.innerHeight / 2 - e.pageY) / 100;
-            heroConsole.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-        });
+        if (heroConsole) {
+            document.addEventListener('mousemove', e => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 100;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 100;
+                heroConsole.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            });
+        }
     }
 
     // --- 5. SUBTLE MATRIX DEPTH ---
@@ -113,7 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
             h = canvas.height = window.innerHeight;
         });
 
-        // Less dense on mobile to save performance
         const divider = isTouchDevice ? 40 : 30;
         const cols = Math.floor(w / divider); 
         const ypos = Array(cols).fill(0);
@@ -132,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 else ypos[i] = y + divider;
             });
         };
-        // Run slower on mobile for battery saving
+        
         setInterval(drawMatrix, isTouchDevice ? 100 : 70);
     }
 
@@ -211,24 +234,26 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 9. SECURE VISITOR LOGGING SYSTEM (SUPABASE REST API) ---
-    // Executes asynchronously so it doesn't block UI rendering
+    // 📡 Visitor logging system starts here
     (async function initVisitorLogging() {
-        const SUPABASE_URL = "https://uicxnlfulmnpragakjkt.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_V-rKqlVrbUKlFquwDq83oA_Ai6uIu33";
-        
+        const SUPABASE_URL = CONFIG.SUPABASE_URL;
+        const SUPABASE_PUBLISHABLE_KEY = CONFIG.SUPABASE_PUBLISHABLE_KEY;
+
+        // Delay execution by 2.5 seconds to ensure non-blocking UI render
         setTimeout(async () => {
             try {
-                // 1. Fetch IP Geolocation Data
+                // Fetch Geolocation
                 let locationData = { country_name: "Unknown", region: "Unknown", city: "Unknown" };
                 try {
                     const ipResponse = await fetch('https://ipapi.co/json/');
                     if (ipResponse.ok) {
                         locationData = await ipResponse.json();
                     }
-                } catch (e) { /* Silent fail */ }
+                } catch (ipError) {
+                    console.log("Failed to fetch location data.");
+                }
 
-                // 2. Extract Device Intelligence from UserAgent
+                // Detect Browser and OS
                 const ua = navigator.userAgent;
                 
                 let browser = "Unknown";
@@ -246,41 +271,43 @@ document.addEventListener("DOMContentLoaded", () => {
                 else if (ua.includes("Android")) os = "Android";
                 else if (ua.includes("like Mac")) os = "iOS";
 
-                let deviceType = "Desktop";
-                if (/Mobi|Android/i.test(ua)) deviceType = "Mobile";
-                if (/Tablet|iPad/i.test(ua)) deviceType = "Tablet";
-
-                // 3. Assemble Secure Payload
+                // Construct strict payload matching exact table columns
                 const payload = {
                     country: locationData.country_name || "Unknown",
                     state: locationData.region || "Unknown",
                     city: locationData.city || "Unknown",
                     browser: browser,
                     os: os,
-                    device_type: deviceType,
-                    device_name: `${os} Device`,
-                    screen_resolution: `${window.screen.width}x${window.screen.height}`,
+                    resolution: `${window.screen.width}x${window.screen.height}`,
                     date: new Date().toISOString().split('T')[0],
                     timestamp: new Date().toISOString()
                 };
 
-                // 4. Transmit to Supabase Database
-                if (SUPABASE_URL !== "https://uicxnlfulmnpragakjkt.supabase.co") {
-                    await fetch(`${SUPABASE_URL}/rest/v1/visitor_logs`, {
+                // 🚀 Sending visitor telemetry securely to Supabase
+                if (SUPABASE_URL !== "PASTE_YOUR_PROJECT_URL_HERE" && SUPABASE_PUBLISHABLE_KEY !== "PASTE_YOUR_PUBLISHABLE_KEY_HERE") {
+                    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/visitor_logs`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${SUPABASE_KEY}`,
+                            'apikey': SUPABASE_PUBLISHABLE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
                             'Prefer': 'return=minimal'
                         },
                         body: JSON.stringify(payload)
                     });
+
+                    if (supabaseResponse.ok) {
+                        console.log("Visitor logged successfully");
+                    } else {
+                        const errorText = await supabaseResponse.text();
+                        console.log("Supabase logging failed: " + errorText);
+                    }
                 }
+
             } catch (error) {
-                // Fail silently to preserve user experience
+                console.log("Error during visitor logging execution: " + error.message);
             }
-        }, 3500); // 3.5s delay prioritizes critical rendering path
+        }, 2500); 
     })();
 
 });
