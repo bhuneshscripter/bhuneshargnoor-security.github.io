@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bhunesh Argnoor | Senior Security Engineer</title>
+    <title>Bhunesh Argnoor | Premium Security Console</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -16,175 +16,189 @@
         <source src="https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3" type="audio/mpeg">
     </audio>
 
+    <div class="ambient-glow" id="ambient-glow"></div>
+    <div class="perspective-grid"></div>
+    <canvas id="matrix-canvas"></canvas>
     <div class="scanlines"></div>
-    <div class="noise"></div>
     <div class="vignette"></div>
     
-    <div id="cursor-dot"></div>
+    <div id="cursor-core"></div>
     <div id="cursor-ring">
-        <div class="scope-crosshair"></div>
-        <div class="scope-corner top-left"></div>
-        <div class="scope-corner top-right"></div>
-        <div class="scope-corner bottom-left"></div>
-        <div class="scope-corner bottom-right"></div>
+        <div class="crosshair-h"></div>
+        <div class="crosshair-v"></div>
+        <div class="ring-orbit"></div>
+        <div class="corner t-l"></div>
+        <div class="corner t-r"></div>
+        <div class="corner b-l"></div>
+        <div class="corner b-r"></div>
     </div>
 
     <div id="gate-screen">
-        <div class="gate-content">
-            <div class="lock-icon">
-                <div class="lock-circle"></div>
-                <i class="fas fa-lock"></i>
+        <div class="gate-auth-panel">
+            <div class="shield-container">
+                <i class="fas fa-shield-alt shield-icon"></i>
+                <div class="shield-scan"></div>
             </div>
-            <h1 class="glitch" data-text="SECURE CONNECTION REQUIRED">SECURE CONNECTION REQUIRED</h1>
-            <p class="blink">_PRESS_ENTER_TO_DECRYPT_</p>
-            <div class="progress-bar"><div class="progress-fill"></div></div>
+            <h1 class="auth-title">ENCRYPTED_UPLINK</h1>
+            <p class="auth-subtitle blink">AWAITING_AUTHORIZATION... [PRESS ENTER]</p>
+            <div class="auth-progress"><div class="auth-fill"></div></div>
         </div>
     </div>
 
-    <canvas id="matrix-canvas"></canvas>
-
     <nav class="hud-nav">
         <div class="nav-brand">
-            <span class="prefix">root@bhunesh:</span><span class="tilde">~</span><span class="cursor-blink">█</span>
+            <span class="brand-user">root</span><span class="brand-at">@</span><span class="brand-host">bhunesh:</span><span class="brand-dir">~</span><span class="cursor-blink">█</span>
         </div>
         <ul class="nav-links">
-            <li><a href="#about" class="hud-btn">_WHOAMI</a></li>
-            <li><a href="#expertise" class="hud-btn">_CAPABILITIES</a></li>
-            <li><a href="#experience" class="hud-btn">_LOGS</a></li>
-            <li><a href="#contact" class="hud-btn">_HANDSHAKE</a></li>
+            <li><a href="#about" class="hud-btn"><span class="btn-text">_whoami</span><div class="btn-glow"></div></a></li>
+            <li><a href="#expertise" class="hud-btn"><span class="btn-text">_capabilities</span><div class="btn-glow"></div></a></li>
+            <li><a href="#experience" class="hud-btn"><span class="btn-text">_execution_logs</span><div class="btn-glow"></div></a></li>
+            <li><a href="#contact" class="hud-btn"><span class="btn-text">_handshake</span><div class="btn-glow"></div></a></li>
         </ul>
     </nav>
 
     <main>
         
         <section id="hero">
-            <div class="hero-container">
-                <div class="glitch-wrapper">
-                    <h1 class="hero-title glitch" data-text="BHUNESH ARGNOOR">BHUNESH ARGNOOR</h1>
-                </div>
-                <div class="terminal-line">
-                    <span class="prompt">></span> 
-                    <span class="command">./init_profile.sh --role=red_team</span>
-                </div>
-                <div class="typewriter-container">
-                    <span id="typing-text"></span><span class="cursor-blink">_</span>
-                </div>
-                <div class="hero-stats">
-                    <div class="stat-box">
-                        <span class="stat-label">EXP</span>
-                        <span class="stat-val">4+ YRS</span>
+            <div class="hero-parallax-container">
+                <div class="hero-glass-console reveal-hero">
+                    <div class="console-header">
+                        <div class="mac-dots"><span class="dot d-r"></span><span class="dot d-y"></span><span class="dot d-g"></span></div>
+                        <div class="console-title">init_sys.sh</div>
                     </div>
-                    <div class="stat-box">
-                        <span class="stat-label">TEAM</span>
-                        <span class="stat-val">18+ ENG</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-label">LOC</span>
-                        <span class="stat-val">INDIA</span>
+                    <div class="console-body">
+                        <div class="cli-line">
+                            <span class="prompt">❯</span> <span class="command">./deploy_identity.sh --role="Red_Team"</span>
+                        </div>
+                        <div class="hero-title-wrapper">
+                            <h1 class="hero-title cinematic-glitch" data-text="BHUNESH ARGNOOR">BHUNESH ARGNOOR</h1>
+                        </div>
+                        <div class="typewriter-wrapper">
+                            <span id="typing-text" class="neon-text-cyan"></span><span class="cursor-blink neon-text-cyan">_</span>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <span class="m-label">EXP_LEVEL</span>
+                                <span class="m-value">4+ YRS</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="m-label">SQUAD_SIZE</span>
+                                <span class="m-value">18+ ENG</span>
+                            </div>
+                            <div class="metric-card">
+                                <span class="m-label">SYS_LOC</span>
+                                <span class="m-value">INDIA</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="about" class="hud-section">
-            <div class="section-header">
-                <span class="section-num">01</span>
-                <h2 class="scramble-text">WHOAMI</h2>
-                <div class="line-deco"></div>
+            <div class="section-title-wrap reveal">
+                <span class="s-num">01</span>
+                <h2 class="s-text scramble-text">whoami</h2>
+                <div class="s-line"></div>
             </div>
-            <div class="terminal-window reveal">
-                <div class="terminal-bar">
-                    <div class="dots">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                    </div>
-                    <span class="title">user_profile.json</span>
-                </div>
-                <div class="terminal-content">
-                    <p><span class="c-green">➜</span> <span class="c-blue">Role:</span> Application Security Engineer @ TCS</p>
-                    <p><span class="c-green">➜</span> <span class="c-blue">Mission:</span> Securing Web, Mobile, API & GenAI landscapes.</p>
-                    <p><span class="c-green">➜</span> <span class="c-blue">Command:</span> Leading 18+ security engineers.</p>
-                    <p><span class="c-green">➜</span> <span class="c-blue">Impact:</span> Delivered enterprise AI governance frameworks.</p>
-                    <br>
-                    <p class="comment">// STATUS: OPERATIONAL</p>
-                    <p class="comment">// CERTIFICATION: CEH MASTER [VERIFIED]</p>
+            
+            <div class="premium-card interactive-card reveal">
+                <div class="card-border-glow"></div>
+                <div class="card-content terminal-format">
+                    <div class="term-row"><span class="t-arrow">▶</span> <span class="t-key">Role:</span> <span class="t-val">Application Security Engineer @ TCS</span></div>
+                    <div class="term-row"><span class="t-arrow">▶</span> <span class="t-key">Directive:</span> <span class="t-val">Securing Web, Mobile, API & GenAI architectures.</span></div>
+                    <div class="term-row"><span class="t-arrow">▶</span> <span class="t-key">Leadership:</span> <span class="t-val">Commanding 18+ enterprise security engineers.</span></div>
+                    <div class="term-row"><span class="t-arrow">▶</span> <span class="t-key">Impact:</span> <span class="t-val">Architected & deployed enterprise AI governance frameworks.</span></div>
+                    <div class="term-divider"></div>
+                    <div class="term-row comment">// SYS_STATUS: FULLY OPERATIONAL</div>
+                    <div class="term-row comment">// CLEARANCE: CEH MASTER [VERIFIED]</div>
                 </div>
             </div>
         </section>
 
         <section id="expertise" class="hud-section">
-            <div class="section-header">
-                <span class="section-num">02</span>
-                <h2 class="scramble-text">CAPABILITIES</h2>
-                <div class="line-deco"></div>
+            <div class="section-title-wrap reveal">
+                <span class="s-num">02</span>
+                <h2 class="s-text scramble-text">capabilities</h2>
+                <div class="s-line"></div>
             </div>
-            <div class="grid-container">
-                <div class="cyber-card reveal">
-                    <div class="card-deco"></div>
-                    <div class="card-icon"><i class="fas fa-biohazard"></i></div>
-                    <h3>Red Team Ops</h3>
-                    <p>Advanced adversarial simulation & ethical hacking operations.</p>
+            
+            <div class="capabilities-grid">
+                <div class="premium-card interactive-card capability-card reveal delay-1">
+                    <div class="card-border-glow"></div>
+                    <div class="c-icon"><i class="fas fa-biohazard"></i></div>
+                    <h3 class="c-title">Red Team Ops</h3>
+                    <p class="c-desc">Advanced adversarial simulation, offensive security, and ethical hacking protocols.</p>
                 </div>
-                <div class="cyber-card reveal">
-                    <div class="card-deco"></div>
-                    <div class="card-icon"><i class="fas fa-brain"></i></div>
-                    <h3>GenAI Security</h3>
-                    <p>LLM pentesting, prompt injection defense & governance.</p>
+                <div class="premium-card interactive-card capability-card reveal delay-2">
+                    <div class="card-border-glow"></div>
+                    <div class="c-icon"><i class="fas fa-brain"></i></div>
+                    <h3 class="c-title">GenAI Security</h3>
+                    <p class="c-desc">LLM penetration testing, prompt injection defense, and AI governance frameworks.</p>
                 </div>
-                <div class="cyber-card reveal">
-                    <div class="card-deco"></div>
-                    <div class="card-icon"><i class="fas fa-globe"></i></div>
-                    <h3>Web & API Sec</h3>
-                    <p>Comprehensive vulnerability assessment for complex architectures.</p>
+                <div class="premium-card interactive-card capability-card reveal delay-3">
+                    <div class="card-border-glow"></div>
+                    <div class="c-icon"><i class="fas fa-globe"></i></div>
+                    <h3 class="c-title">Web & API Sec</h3>
+                    <p class="c-desc">Deep vulnerability assessments and penetration testing for complex API infrastructures.</p>
                 </div>
-                <div class="cyber-card reveal">
-                    <div class="card-deco"></div>
-                    <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
-                    <h3>Architecture Review</h3>
-                    <p>Threat modeling & secure design implementation.</p>
+                <div class="premium-card interactive-card capability-card reveal delay-1">
+                    <div class="card-border-glow"></div>
+                    <div class="c-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3 class="c-title">Architecture Review</h3>
+                    <p class="c-desc">Enterprise threat modeling and secure design implementation for scalable systems.</p>
                 </div>
-                <div class="cyber-card reveal">
-                    <div class="card-deco"></div>
-                    <div class="card-icon"><i class="fas fa-code-branch"></i></div>
-                    <h3>DevSecOps</h3>
-                    <p>Automated security pipelines & SDLC integration.</p>
+                <div class="premium-card interactive-card capability-card reveal delay-2">
+                    <div class="card-border-glow"></div>
+                    <div class="c-icon"><i class="fas fa-code-branch"></i></div>
+                    <h3 class="c-title">DevSecOps</h3>
+                    <p class="c-desc">Seamless integration of automated security testing pipelines within CI/CD (SDLC).</p>
                 </div>
-                <div class="cyber-card reveal">
-                    <div class="card-deco"></div>
-                    <div class="card-icon"><i class="fas fa-users-cog"></i></div>
-                    <h3>Leadership</h3>
-                    <p>Mentoring 778+ professionals & leading enterprise squads.</p>
+                <div class="premium-card interactive-card capability-card reveal delay-3">
+                    <div class="card-border-glow"></div>
+                    <div class="c-icon"><i class="fas fa-users-cog"></i></div>
+                    <h3 class="c-title">Leadership</h3>
+                    <p class="c-desc">Mentoring 778+ professionals while steering high-performance enterprise squads.</p>
                 </div>
             </div>
         </section>
 
         <section id="experience" class="hud-section">
-            <div class="section-header">
-                <span class="section-num">03</span>
-                <h2 class="scramble-text">EXECUTION_LOGS</h2>
-                <div class="line-deco"></div>
+            <div class="section-title-wrap reveal">
+                <span class="s-num">03</span>
+                <h2 class="s-text scramble-text">execution_logs</h2>
+                <div class="s-line"></div>
             </div>
-            <div class="timeline">
-                <div class="log-entry reveal">
-                    <div class="log-marker"></div>
-                    <div class="log-date">[2021 - PRESENT]</div>
-                    <div class="log-content">
-                        <h3>Cyber Security Engineer <span class="company">@ TCS</span></h3>
-                        <ul>
-                            <li>>> Lead & mentor team of 18+ security engineers.</li>
-                            <li>>> Execute architecture reviews & PT for Web, Mobile, API, & GenAI.</li>
-                            <li>>> Deliver enterprise AI security governance frameworks.</li>
+            
+            <div class="premium-card interactive-card timeline-container reveal">
+                <div class="card-border-glow"></div>
+                <div class="timeline-track"></div>
+                
+                <div class="log-node reveal delay-1">
+                    <div class="node-pulse"></div>
+                    <div class="node-content">
+                        <div class="n-header">
+                            <span class="n-date">[ 2021 - PRESENT ]</span>
+                            <h3 class="n-title">Cyber Security Engineer <span class="n-corp">@ TCS</span></h3>
+                        </div>
+                        <ul class="n-details">
+                            <li><span class="bullet">❯</span> Lead & mentor squad of 18+ elite security engineers.</li>
+                            <li><span class="bullet">❯</span> Execute deep architecture reviews & PT across Web, Mobile, API, & GenAI.</li>
+                            <li><span class="bullet">❯</span> Architected and delivered enterprise-wide AI security governance frameworks.</li>
                         </ul>
                     </div>
                 </div>
-                <div class="log-entry reveal">
-                    <div class="log-marker"></div>
-                    <div class="log-date">[2020 - 2021]</div>
-                    <div class="log-content">
-                        <h3>Project Intern <span class="company">@ Tech Mahindra</span></h3>
-                        <ul>
-                            <li>>> Focused on project delivery and technical research.</li>
+
+                <div class="log-node reveal delay-2">
+                    <div class="node-pulse"></div>
+                    <div class="node-content">
+                        <div class="n-header">
+                            <span class="n-date">[ 2020 - 2021 ]</span>
+                            <h3 class="n-title">Project Intern <span class="n-corp">@ Tech Mahindra</span></h3>
+                        </div>
+                        <ul class="n-details">
+                            <li><span class="bullet">❯</span> Focused on secure project delivery and advanced technical research.</li>
                         </ul>
                     </div>
                 </div>
@@ -192,43 +206,44 @@
         </section>
 
         <section id="contact" class="hud-section">
-            <div class="section-header">
-                <span class="section-num">04</span>
-                <h2 class="scramble-text" data-text="HANDSHAKE">HANDSHAKE</h2>
-                <div class="line-deco"></div>
+            <div class="section-title-wrap reveal">
+                <span class="s-num">04</span>
+                <h2 class="s-text scramble-text" data-text="handshake">handshake</h2>
+                <div class="s-line"></div>
             </div>
-            <div class="contact-terminal reveal">
-                <div class="terminal-bar">
-                    <span class="title">secure_comm_uplink.exe</span>
-                </div>
-                <div class="terminal-content text-center">
-                    <p class="terminal-text">> Initiating encrypted communication channel...</p>
-                    <p class="terminal-text">> Target: Secure Enterprise Infrastructure & AI Governance.</p>
-                    <br>
-                    <div class="action-buttons">
-                        <a href="mailto:argnoorbhunesh@gmail.com" class="hud-btn-large">
+            
+            <div class="premium-card interactive-card handshake-card reveal">
+                <div class="card-border-glow"></div>
+                <div class="h-content">
+                    <i class="fas fa-satellite-dish h-icon"></i>
+                    <p class="h-desc">Ready to secure next-gen enterprise infrastructures and AI deployments.<br>Initiate an encrypted connection below.</p>
+                    
+                    <div class="h-actions">
+                        <a href="mailto:your-email@example.com" class="cyber-btn primary-btn">
+                            <span class="btn-bg"></span>
                             <i class="fas fa-envelope"></i>
-                            <span class="btn-text">TRANSMIT_EMAIL</span>
-                            <span class="btn-glitch"></span>
+                            <span class="b-text">TRANSMIT_EMAIL</span>
                         </a>
-                        <a href="https://www.linkedin.com/in/bhunesh-argnoor/" target="_blank" class="hud-btn-large btn-secondary">
+                        <a href="https://linkedin.com/in/your-profile" target="_blank" class="cyber-btn secondary-btn">
+                            <span class="btn-bg"></span>
                             <i class="fab fa-linkedin-in"></i>
-                            <span class="btn-text">LINKEDIN_UPLINK</span>
-                            <span class="btn-glitch"></span>
+                            <span class="b-text">LINKEDIN_UPLINK</span>
                         </a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <footer>
-            <div class="footer-line">SYSTEM STATUS: NOMINAL</div>
-            <div class="footer-copy">© 2025 BHUNESH ARGNOOR | END_OF_LINE</div>
+        <footer class="console-footer reveal">
+            <div class="f-divider"></div>
+            <div class="f-content">
+                <span class="f-status neon-text-cyan">SYS_STATUS: SECURE_AND_NOMINAL</span>
+                <span class="f-copy">© 2026 BHUNESH ARGNOOR | SEC_ENG</span>
+            </div>
         </footer>
 
     </main>
 
     <script src="script.js"></script>
 </body>
-
 </html>
