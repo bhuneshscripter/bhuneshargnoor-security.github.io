@@ -12,53 +12,131 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- UTILITY: Check for Touch Device ---
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
 
-    // --- 1. PREMIUM BOOT SEQUENCE ---
+    /* ==========================================================================
+       🔐 1. CINEMATIC BOOT AUTHORIZATION SEQUENCE
+       ========================================================================== */
     const gate = document.getElementById("gate-screen");
     const progressFill = document.querySelector(".auth-fill");
-    const bootSound = document.getElementById("boot-sound");
+    const authSound = document.getElementById("auth-sound");
+    const diagnosticLogs = document.getElementById("diagnostic-logs");
+    const authSubtitle = document.querySelector('.auth-subtitle');
+    const authTitle = document.querySelector('.auth-title');
+    const scanBeam = document.querySelector('.scan-beam');
     let isUnlocked = false;
 
-    // Lock scrolling initially
+    // Lock scrolling initially for security immersion
     document.body.style.overflow = "hidden";
 
+    // Dynamic Diagnostics Typewriter Array
+    const logs = [
+        "> initializing secure kernel...",
+        "> validating operator signature...",
+        "> loading red_team modules...",
+        "> establishing encrypted handshake..."
+    ];
+    let logIndex = 0;
+    let charIndex = 0;
+    let typingTimeout;
+
+    // Typewriter for diagnostics logs
+    function typeDiagnosticLog() {
+        if (isUnlocked || !diagnosticLogs) return; // Halt if user already authorized
+        
+        if (logIndex < logs.length) {
+            if (charIndex === 0) {
+                const p = document.createElement("div");
+                p.className = "log-line";
+                p.id = "current-log";
+                diagnosticLogs.appendChild(p);
+            }
+            
+            const currentP = document.getElementById("current-log");
+            currentP.innerHTML += logs[logIndex].charAt(charIndex);
+            charIndex++;
+            
+            if (charIndex < logs[logIndex].length) {
+                typingTimeout = setTimeout(typeDiagnosticLog, 25 + Math.random() * 30);
+            } else {
+                currentP.removeAttribute("id");
+                logIndex++;
+                charIndex = 0;
+                typingTimeout = setTimeout(typeDiagnosticLog, 500); // System pause before next diagnostic
+            }
+        }
+    }
+    
+    // Initiate diagnostics immediately
+    typeDiagnosticLog();
+
+    // The core unlock trigger function
     const triggerUnlock = () => {
         if (isUnlocked) return;
         isUnlocked = true;
         
-        if (bootSound) {
-            bootSound.volume = 0.2;
-            bootSound.play().catch(() => {
-                console.log("Audio autoplay restricted by browser.");
+        // Interrupt ongoing diagnostics
+        clearTimeout(typingTimeout);
+
+        // Audio cue: Futuristic Confirmation
+        if (authSound) {
+            authSound.volume = 0.5;
+            authSound.play().catch(() => {
+                console.log("Audio autoplay restricted by browser policies.");
             });
         }
 
-        const subtitle = document.querySelector('.auth-subtitle');
-        if (subtitle) {
-            subtitle.innerHTML = "DECRYPTING_MODULES...";
-            subtitle.classList.remove('blink');
+        // Output Final Acceptance Log
+        if (diagnosticLogs) {
+            const successLog = document.createElement("div");
+            successLog.className = "log-line log-success";
+            successLog.innerHTML = "> AUTHORIZATION ACCEPTED [200 OK]";
+            diagnosticLogs.appendChild(successLog);
+        }
+
+        // Visually update the UI state to 'Granted'
+        if (authSubtitle) {
+            authSubtitle.innerHTML = "ACCESS GRANTED";
+            authSubtitle.classList.remove('blink');
+            authSubtitle.style.color = "var(--neon-green)";
+            authSubtitle.style.textShadow = "0 0 10px var(--neon-green)";
         }
         
+        if (authTitle) {
+            authTitle.style.color = "var(--neon-green)";
+            authTitle.style.textShadow = "0 0 20px var(--neon-green)";
+            authTitle.classList.remove('auth-glitch'); // Stop heavy glitching on success
+        }
+
+        // Terminate scanning beam
+        if (scanBeam) scanBeam.style.display = 'none';
+        
+        // Progress sequence
         if (progressFill) progressFill.style.width = "100%";
 
+        // Fade Transition into main application
         setTimeout(() => {
             if (gate) gate.style.opacity = "0";
             setTimeout(() => {
                 if (gate) gate.style.display = "none";
                 document.body.style.overflow = "auto";
+                
+                // Initialize main site animations
                 initTypewriter();
                 const heroReveal = document.querySelector('.reveal-hero');
                 if (heroReveal) heroReveal.classList.add('active');
-            }, 800);
-        }, 1200);
+            }, 1000);
+        }, 1200); // Allows operator to read "ACCESS GRANTED" before fade
     };
 
+    // Listeners for Authorization
     document.addEventListener("keydown", (e) => { if (e.key === "Enter") triggerUnlock(); });
     if (gate) {
         gate.addEventListener("click", triggerUnlock);
         gate.addEventListener("touchstart", triggerUnlock, {passive: true});
     }
 
-    // --- 2. TACTICAL RETICLE & GLOW ENGINE (Desktop Only) ---
+    /* ==========================================================================
+       🎯 2. TACTICAL RETICLE & GLOW ENGINE (Desktop Only)
+       ========================================================================== */
     if (!isTouchDevice) {
         const cursorCore = document.getElementById("cursor-core");
         const cursorRing = document.getElementById("cursor-ring");
@@ -101,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
             el.addEventListener("mouseleave", () => document.body.classList.remove("hover-active"));
         });
 
-        // --- 3. DYNAMIC CARD SPOTLIGHT ---
+        // Dynamic Glassmorphism Spotlights
         const cards = document.querySelectorAll('.interactive-card');
         cards.forEach(card => {
             card.addEventListener('mousemove', e => {
@@ -113,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // --- 4. HERO PARALLAX ---
+        // Hero Parallax Layering
         const heroConsole = document.querySelector('.hero-glass-console');
         if (heroConsole) {
             document.addEventListener('mousemove', e => {
@@ -125,29 +203,27 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ==========================================================================
-       🧠 ELITE NEURAL INTRUSION DETECTION ENGINE (CANVAS BACKGROUND)
+       🧠 3. ELITE NEURAL INTRUSION DETECTION ENGINE (CANVAS BACKGROUND)
        ========================================================================== */
     (function initNeuralDefenseGrid() {
         const canvas = document.getElementById('neural-defense-grid');
         if (!canvas) return;
-        const ctx = canvas.getContext('2d', { alpha: false }); // Optimize for opaque background
+        const ctx = canvas.getContext('2d', { alpha: false }); 
         
-        // --- 🎨 STRICT HACKER STYLE PALETTE ---
         const COLORS = {
-            bg: '#02040a',         // Deep Navy
-            cyan: '0, 240, 255',   // Electric Cyan (#00f0ff)
-            green: '0, 255, 156',  // Neon Green (#00ff9c)
-            red: '255, 0, 64'      // Alert Pulse Red (#ff0040)
+            bg: '#02040a',         
+            cyan: '0, 240, 255',   
+            green: '0, 255, 156',  
+            red: '255, 0, 64'      
         };
 
-        // --- ⚡ SYSTEM ARCHITECTURE CONFIGURATION ---
         const NEURAL_CONFIG = {
-            particleCount: isTouchDevice ? 45 : 120,    // 50% reduction for mobile
-            gridSpacing: isTouchDevice ? 80 : 45,       // Wider grid on mobile
-            linkRadius: isTouchDevice ? 110 : 160,      // Connection threshold distance
-            mouseRadius: isTouchDevice ? 150 : 250,     // Magnetic gravity well size
-            pulseThreshold: 45,                         // Velocity required to trigger energy ripple
-            glowEnabled: !isTouchDevice                 // Disable expensive canvas shadows on mobile
+            particleCount: isTouchDevice ? 45 : 120,    
+            gridSpacing: isTouchDevice ? 80 : 45,       
+            linkRadius: isTouchDevice ? 110 : 160,      
+            mouseRadius: isTouchDevice ? 150 : 250,     
+            pulseThreshold: 45,                         
+            glowEnabled: !isTouchDevice                 
         };
 
         let w, h;
@@ -156,17 +232,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let pulses = [];
         let threatScannerY = -200;
         
-        // 🎯 Operator Tracking (Mouse/Touch State)
         const operator = {
-            x: -1000, 
-            y: -1000,
-            lastX: -1000, 
-            lastY: -1000,
-            speed: 0,
-            idleFrames: 0
+            x: -1000, y: -1000, lastX: -1000, lastY: -1000, speed: 0, idleFrames: 0
         };
 
-        // --- 📐 RESIZE & INITIALIZATION ---
         function resize() {
             w = canvas.width = window.innerWidth;
             h = canvas.height = window.innerHeight;
@@ -174,19 +243,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         window.addEventListener('resize', resize);
 
-        // --- 📡 OPERATOR PRESENCE DETECTION ---
         function updateOperator(x, y) {
             operator.lastX = operator.x;
             operator.lastY = operator.y;
             operator.x = x;
             operator.y = y;
-            
             const vx = operator.x - operator.lastX;
             const vy = operator.y - operator.lastY;
             operator.speed = Math.hypot(vx, vy);
-            operator.idleFrames = 0; // Reset idle timer upon detection
+            operator.idleFrames = 0; 
 
-            // 💥 Energy Ripple Engine: Triggered by rapid, decisive mouse movements
             if (operator.speed > NEURAL_CONFIG.pulseThreshold && pulses.length < 3) {
                 pulses.push(new EnergyPulse(operator.x, operator.y, operator.speed));
             }
@@ -196,13 +262,9 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('touchmove', e => updateOperator(e.touches[0].clientX, e.touches[0].clientY), {passive: true});
         window.addEventListener('mouseout', () => { operator.x = -1000; operator.y = -1000; });
 
-        // --- 🧲 1. MAGNETIC GRID DISTORTION PHYSICS ---
         class GridNode {
             constructor(x, y) {
-                this.baseX = x;
-                this.baseY = y;
-                this.x = x;
-                this.y = y;
+                this.baseX = x; this.baseY = y; this.x = x; this.y = y;
             }
             update() {
                 const dx = operator.x - this.baseX;
@@ -210,16 +272,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const dist = Math.hypot(dx, dy);
 
                 if (dist < NEURAL_CONFIG.mouseRadius) {
-                    // Grid warps toward cursor creating a magnetic distortion field
                     const force = Math.pow((NEURAL_CONFIG.mouseRadius - dist) / NEURAL_CONFIG.mouseRadius, 2);
                     const targetX = this.baseX + (dx * force * 0.2);
                     const targetY = this.baseY + (dy * force * 0.2);
-                    
-                    // Smooth easing physics (LERP)
                     this.x += (targetX - this.x) * 0.1;
                     this.y += (targetY - this.y) * 0.1;
                 } else {
-                    // Snap back to base position when operator leaves
                     this.x += (this.baseX - this.x) * 0.05;
                     this.y += (this.baseY - this.y) * 0.05;
                 }
@@ -230,24 +288,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // --- 🦠 2. CURSOR-ATTRACTED PARTICLE NETWORK ---
         class NeuralParticle {
             constructor() {
-                this.x = Math.random() * w;
-                this.y = Math.random() * h;
-                this.vx = (Math.random() - 0.5) * 1.2;
-                this.vy = (Math.random() - 0.5) * 1.2;
+                this.x = Math.random() * w; this.y = Math.random() * h;
+                this.vx = (Math.random() - 0.5) * 1.2; this.vy = (Math.random() - 0.5) * 1.2;
                 this.size = Math.random() * 1.5 + 0.5;
-                this.isAlert = Math.random() > 0.95; // 5% chance of being an Alert Pulse Red node
+                this.isAlert = Math.random() > 0.95; 
                 this.color = this.isAlert ? COLORS.red : COLORS.green;
             }
-
             update() {
-                // Autonomous Drift
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // Screen Wrapping for continuous seamless flow (with overscan margin)
+                this.x += this.vx; this.y += this.vy;
                 const margin = 100;
                 if (this.x < -margin) this.x = w + margin;
                 if (this.x > w + margin) this.x = -margin;
@@ -258,48 +308,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 const dy = operator.y - this.y;
                 const dist = Math.hypot(dx, dy);
 
-                // Gravity Field & Orbital Mechanics
                 if (dist < NEURAL_CONFIG.mouseRadius) {
                     const force = (NEURAL_CONFIG.mouseRadius - dist) / NEURAL_CONFIG.mouseRadius;
                     const angle = Math.atan2(dy, dx);
-                    
-                    // 1. Pull toward operator (Gravity attraction)
                     this.x += Math.cos(angle) * force * 1.5;
                     this.y += Math.sin(angle) * force * 1.5;
-                    
-                    // 2. Tangential force (Orbital swirling effect creating a vortex)
                     this.x += Math.cos(angle + Math.PI / 2) * force * 2.0;
                     this.y += Math.sin(angle + Math.PI / 2) * force * 2.0;
                 }
             }
-
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fillStyle = `rgb(${this.color})`;
-                
                 if (NEURAL_CONFIG.glowEnabled) {
                     ctx.shadowBlur = this.isAlert ? 15 : 8;
                     ctx.shadowColor = `rgb(${this.color})`;
                 }
-                
                 ctx.fill();
-                ctx.shadowBlur = 0; // Reset immediately to prevent bleeding and save GPU
+                ctx.shadowBlur = 0; 
             }
         }
 
-        // --- 💥 3. ENERGY PULSE RIPPLE ENGINE ---
         class EnergyPulse {
             constructor(x, y, speed) {
-                this.x = x;
-                this.y = y;
-                this.radius = 5;
-                this.alpha = 0.7;
+                this.x = x; this.y = y; this.radius = 5; this.alpha = 0.7;
                 this.growthRate = Math.min(speed * 0.15, 6) + 2; 
             }
             update() {
-                this.radius += this.growthRate;
-                this.alpha -= 0.012; // Fading glow
+                this.radius += this.growthRate; this.alpha -= 0.012; 
             }
             draw() {
                 ctx.beginPath();
@@ -310,18 +347,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // --- 🚀 SYSTEM INITIALIZATION ---
         function initSystem() {
-            particles = [];
-            gridNodes = [];
-            pulses = [];
-            
-            // Populate Neural Network
-            for (let i = 0; i < NEURAL_CONFIG.particleCount; i++) {
-                particles.push(new NeuralParticle());
-            }
-            
-            // Populate Magnetic Defense Grid (Overscan to handle parallax seamless wrapping)
+            particles = []; gridNodes = []; pulses = [];
+            for (let i = 0; i < NEURAL_CONFIG.particleCount; i++) particles.push(new NeuralParticle());
             const overscan = 150;
             for (let x = -overscan; x <= w + overscan; x += NEURAL_CONFIG.gridSpacing) {
                 for (let y = -overscan; y <= h + overscan; y += NEURAL_CONFIG.gridSpacing) {
@@ -330,37 +358,26 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // --- 🎞️ CORE ANIMATION LOOP (60FPS) ---
         function render() {
-            // Clear screen with opacity to create smooth motion trails
-            ctx.fillStyle = `rgba(2, 4, 10, 0.25)`; // Trails fade into Deep Navy Void
+            ctx.fillStyle = `rgba(2, 4, 10, 0.25)`; 
             ctx.fillRect(0, 0, w, h);
 
             operator.idleFrames++;
 
-            // 🌌 4. Subtle 3D Parallax Illusion (Desktop Only)
             if (!isTouchDevice && operator.idleFrames < 100) {
                 const shiftX = (operator.x - w / 2) * 0.015;
                 const shiftY = (operator.y - h / 2) * 0.015;
                 ctx.setTransform(1, 0, 0, 1, -shiftX, -shiftY);
             } else {
-                ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform smoothly when idle
+                ctx.setTransform(1, 0, 0, 1, 0, 0); 
             }
 
-            // Process Magnetic Grid
-            for (let i = 0; i < gridNodes.length; i++) {
-                gridNodes[i].update();
-                gridNodes[i].draw();
-            }
-
-            // Process Energy Pulses
+            for (let i = 0; i < gridNodes.length; i++) { gridNodes[i].update(); gridNodes[i].draw(); }
             for (let i = pulses.length - 1; i >= 0; i--) {
-                pulses[i].update();
-                pulses[i].draw();
+                pulses[i].update(); pulses[i].draw();
                 if (pulses[i].alpha <= 0) pulses.splice(i, 1);
             }
 
-            // 📡 5. Idle Autonomous Mode: Periodic Threat Scan Sweep Line
             threatScannerY += operator.idleFrames > 120 ? 3.5 : 1.5; 
             if (threatScannerY > h + 300) threatScannerY = -200;
             
@@ -371,20 +388,15 @@ document.addEventListener("DOMContentLoaded", () => {
             
             ctx.fillStyle = scanGrad;
             ctx.fillRect(-200, threatScannerY - 80, w + 400, 80); 
-            
             ctx.beginPath();
             ctx.moveTo(-200, threatScannerY);
             ctx.lineTo(w + 400, threatScannerY);
             ctx.strokeStyle = `rgba(${COLORS.cyan}, 0.5)`;
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            ctx.lineWidth = 1; ctx.stroke();
 
-            // 🧠 6. Update Particles & Neural Link Formation
             for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
+                particles[i].update(); particles[i].draw();
 
-                // Form Neural Links (Optimized by distance threshold)
                 for (let j = i + 1; j < particles.length; j++) {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
@@ -392,47 +404,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (dist < NEURAL_CONFIG.linkRadius) {
                         let opacity = 1 - (dist / NEURAL_CONFIG.linkRadius);
-                        let linkColor = COLORS.green; // Default safe link
+                        let linkColor = COLORS.green; 
                         
-                        // Intelligent System Scanning behavior:
                         const distToMouse = Math.hypot(operator.x - particles[i].x, operator.y - particles[i].y);
                         if (distToMouse < 200 && operator.speed < 4 && operator.idleFrames < 60) {
-                            linkColor = COLORS.cyan; 
-                            opacity *= 2.0; // Over-brighten active scan
+                            linkColor = COLORS.cyan; opacity *= 2.0; 
                         } else {
-                            opacity *= 0.3; // Dim autonomous background links
+                            opacity *= 0.3; 
                         }
 
-                        // Red Alert Links
                         if (particles[i].isAlert || particles[j].isAlert) {
-                            linkColor = COLORS.red;
-                            opacity *= 1.5;
+                            linkColor = COLORS.red; opacity *= 1.5;
                         }
 
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
                         ctx.strokeStyle = `rgba(${linkColor}, ${Math.min(opacity, 1)})`;
-                        ctx.lineWidth = 0.8;
-                        ctx.stroke();
+                        ctx.lineWidth = 0.8; ctx.stroke();
                     }
                 }
             }
-
             requestAnimationFrame(render);
         }
-
-        // --- 🚀 IGNITION ---
-        resize();
-        render();
-
+        resize(); render();
     })();
 
-    // --- 6. CINEMATIC TYPEWRITER ---
+    /* ==========================================================================
+       📝 4. CINEMATIC TYPEWRITER & SCROLL EFFECTS
+       ========================================================================== */
     const roles = ["Red_Team_Operator", "GenAI_Security_Spec", "AppSec_Engineer", "CEH_Master"];
-    let roleIdx = 0;
-    let charIdx = 0;
-    let isDeleting = false;
+    let roleIdx = 0, charIdx = 0, isDeleting = false;
     const typeElement = document.getElementById("typing-text");
 
     const initTypewriter = () => {
@@ -448,26 +450,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         let speed = isDeleting ? 30 : 60;
-
         if (!isDeleting && charIdx === currentRole.length) {
-            speed = 2500; 
-            isDeleting = true;
+            speed = 2500; isDeleting = true;
         } else if (isDeleting && charIdx === 0) {
-            isDeleting = false;
-            roleIdx = (roleIdx + 1) % roles.length;
-            speed = 300; 
+            isDeleting = false; roleIdx = (roleIdx + 1) % roles.length; speed = 300; 
         }
-
         setTimeout(initTypewriter, speed);
     };
 
-    // --- 7. ELEGANT SCROLL REVEAL OBSERVER ---
-    const observerOptions = {
-        root: null,
-        rootMargin: "0px 0px -50px 0px",
-        threshold: 0.05
-    };
-
+    const observerOptions = { root: null, rootMargin: "0px 0px -50px 0px", threshold: 0.05 };
     const revealObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -476,14 +467,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }, observerOptions);
-
     document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
 
-    // --- 8. INTELLIGENT SCRAMBLE TEXT ---
     if (!isTouchDevice) {
         const scrambleElements = document.querySelectorAll(".scramble-text");
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$";
-
         scrambleElements.forEach(el => {
             el.addEventListener("mouseenter", e => {
                 let iterations = 0;
@@ -495,7 +483,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         if(i < iterations) return original[i];
                         return chars[Math.floor(Math.random() * chars.length)];
                     }).join("");
-                    
                     if(iterations >= original.length) clearInterval(interval);
                     iterations += 1 / 3; 
                 }, 30);
@@ -503,28 +490,22 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 📡 Visitor logging system starts here
+    /* ==========================================================================
+       📡 5. SECURE VISITOR TELEMETRY (SUPABASE)
+       ========================================================================== */
     (async function initVisitorLogging() {
         setTimeout(async () => {
             try {
-                // 🔐 Using centralized Supabase credentials from CONFIG
                 const SUPABASE_URL = CONFIG.SUPABASE_URL;
                 const SUPABASE_KEY = CONFIG.SUPABASE_PUBLISHABLE_KEY;
 
-                // Fetch Geolocation
                 let locationData = { country_name: "Unknown", region: "Unknown", city: "Unknown" };
                 try {
                     const ipResponse = await fetch('https://ipapi.co/json/');
-                    if (ipResponse.ok) {
-                        locationData = await ipResponse.json();
-                    }
-                } catch (ipError) {
-                    console.log("Failed to fetch location data.");
-                }
+                    if (ipResponse.ok) locationData = await ipResponse.json();
+                } catch (ipError) {}
 
-                // Detect Browser and OS
                 const ua = navigator.userAgent;
-                
                 let browser = "Unknown";
                 if (ua.includes("Firefox")) browser = "Firefox";
                 else if (ua.includes("SamsungBrowser")) browser = "Samsung Internet";
@@ -540,12 +521,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 else if (ua.includes("Android")) os = "Android";
                 else if (ua.includes("like Mac")) os = "iOS";
 
-                // Detect Device Type
                 let device_type = "Desktop";
                 if (/Mobi|Android/i.test(ua)) device_type = "Mobile";
                 if (/Tablet|iPad/i.test(ua)) device_type = "Tablet";
 
-                // 🧠 Advanced device fingerprinting (best-effort model detection)
                 let model_name = "Unknown Model";
                 let device_name = "Unknown Device";
 
@@ -554,45 +533,21 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (brands) model_name = brands;
                 }
 
-                if (ua.includes("iPhone")) { 
-                    model_name = "Apple iPhone"; 
-                    device_name = "iPhone"; 
-                } else if (ua.includes("iPad")) { 
-                    model_name = "Apple iPad"; 
-                    device_name = "iPad"; 
-                } else if (ua.includes("Pixel")) { 
-                    model_name = "Google Pixel Device"; 
-                    device_name = "Android Device"; 
-                } else if (ua.includes("SM-")) { 
-                    model_name = "Samsung Galaxy Device"; 
-                    device_name = "Android Device"; 
-                } else if (ua.includes("Windows")) { 
-                    model_name = "Windows PC / Laptop"; 
-                    device_name = "Windows PC"; 
-                } else if (ua.includes("Macintosh")) { 
-                    model_name = "MacBook / Mac Device"; 
-                    device_name = "MacBook"; 
-                } else if (ua.includes("Linux") && !ua.includes("Android")) { 
-                    model_name = "Linux Machine"; 
-                    device_name = "Linux PC"; 
-                } else if (ua.includes("Android")) {
-                    model_name = "Generic Android Device";
-                    device_name = "Android Device";
-                } else {
-                    device_name = `${os} Device`;
-                }
+                if (ua.includes("iPhone")) { model_name = "Apple iPhone"; device_name = "iPhone"; } 
+                else if (ua.includes("iPad")) { model_name = "Apple iPad"; device_name = "iPad"; } 
+                else if (ua.includes("Pixel")) { model_name = "Google Pixel Device"; device_name = "Android Device"; } 
+                else if (ua.includes("SM-")) { model_name = "Samsung Galaxy Device"; device_name = "Android Device"; } 
+                else if (ua.includes("Windows")) { model_name = "Windows PC / Laptop"; device_name = "Windows PC"; } 
+                else if (ua.includes("Macintosh")) { model_name = "MacBook / Mac Device"; device_name = "MacBook"; } 
+                else if (ua.includes("Linux") && !ua.includes("Android")) { model_name = "Linux Machine"; device_name = "Linux PC"; } 
+                else if (ua.includes("Android")) { model_name = "Generic Android Device"; device_name = "Android Device"; } 
+                else { device_name = `${os} Device`; }
 
-                // 🖥️ Environment classification (VM vs Physical)
                 let environment_type = "Physical Device";
-                const screenWidth = window.screen.width;
-                if ((screenWidth < 800 && device_type === "Desktop") || 
-                    ua.includes("X11") || 
-                    ua.includes("VirtualBox") || 
-                    ua.includes("VMware")) {
+                if ((window.screen.width < 800 && device_type === "Desktop") || ua.includes("X11") || ua.includes("VirtualBox") || ua.includes("VMware")) {
                     environment_type = "VM / Emulator Suspected";
                 }
 
-                // Construct strict payload matching exact table columns
                 const payload = {
                     country: locationData.country_name || "Unknown",
                     state: locationData.region || "Unknown",
@@ -608,9 +563,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     environment_type: environment_type
                 };
 
-                // 📡 Sending enriched telemetry to Supabase securely
                 if (SUPABASE_URL !== "PASTE_YOUR_PROJECT_URL_HERE" && SUPABASE_KEY !== "PASTE_YOUR_PUBLISHABLE_KEY_HERE" && SUPABASE_URL && SUPABASE_KEY) {
-                    const supabaseResponse = await fetch(`${SUPABASE_URL}/rest/v1/visitor_logs`, {
+                    await fetch(`${SUPABASE_URL}/rest/v1/visitor_logs`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -620,21 +574,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         },
                         body: JSON.stringify(payload)
                     });
-
-                    if (supabaseResponse.ok) {
-                        console.log("Visitor logged successfully");
-                    } else {
-                        const errorText = await supabaseResponse.text();
-                        console.log("Supabase logging failed: " + errorText);
-                    }
-                } else {
-                    console.log("Supabase configuration missing or invalid. Logging bypassed.");
                 }
-
             } catch (error) {
-                console.log("Error during visitor logging execution: " + error.message);
+                // Silent catch
             }
-        }, 2500); 
+        }, 3000); 
     })();
 
 });
