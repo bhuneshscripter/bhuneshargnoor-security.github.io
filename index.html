@@ -12,8 +12,8 @@
 </head>
 <body>
 
-    <audio id="boot-sound" preload="auto">
-        <source src="https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3" type="audio/mpeg">
+    <audio id="auth-sound" preload="auto">
+        <source src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" type="audio/mpeg">
     </audio>
 
     <div class="ambient-glow" id="ambient-glow"></div>
@@ -37,12 +37,16 @@
     </div>
 
     <div id="gate-screen">
+        <div class="scan-beam"></div>
         <div class="gate-auth-panel">
             <div class="shield-container">
                 <i class="fas fa-shield-alt shield-icon"></i>
                 <div class="shield-scan"></div>
             </div>
-            <h1 class="auth-title">ENCRYPTED_UPLINK</h1>
+            <h1 class="auth-title auth-glitch" data-text="ENCRYPTED_UPLINK">ENCRYPTED_UPLINK</h1>
+            
+            <div id="diagnostic-logs" class="terminal-logs"></div>
+            
             <p class="auth-subtitle blink">AWAITING_AUTHORIZATION... [PRESS ENTER / TAP]</p>
             <div class="auth-progress"><div class="auth-fill"></div></div>
         </div>
