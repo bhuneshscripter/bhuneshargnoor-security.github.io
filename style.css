@@ -7,9 +7,9 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -10; /* Strictly behind all portfolio content */
-    pointer-events: none; /* Allows mouse events to pass through to UI/Cursor */
-    background: #02040a; /* Strict Hacker Palette: Deep Navy Void */
+    z-index: -10; 
+    pointer-events: none; 
+    background: #02040a; 
 }
 
 #cyber-vignette-overlay {
@@ -18,9 +18,8 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -9; /* Just above canvas, below UI */
+    z-index: -9; 
     pointer-events: none;
-    /* Combines scanlines with a dark edge vignette to create cinematic depth */
     background: 
         radial-gradient(circle at center, transparent 20%, #02040a 140%),
         repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 1px, rgba(0, 240, 255, 0.03) 2px, rgba(0,0,0,0) 3px);
@@ -28,25 +27,21 @@
 
 /* --- CORE VARIABLES --- */
 :root {
-    /* Color Palette */
     --bg-void: #02040a;
     --bg-surface: rgba(10, 15, 25, 0.4);
     --neon-cyan: #00f0ff;
-    --neon-green: #00ff66;
-    --neon-alert: #ff0055;
+    --neon-green: #00ff9c;
+    --neon-alert: #ff0040;
     
-    /* Typography */
     --text-primary: #e2e8f0;
     --text-muted: #64748b;
     --font-sans: 'Rajdhani', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
     
-    /* Effects & Glass */
     --glass-border: rgba(0, 240, 255, 0.15);
     --glass-highlight: rgba(255, 255, 255, 0.05);
     --ease-cinematic: cubic-bezier(0.19, 1, 0.22, 1);
     
-    /* Interactive Coordinates */
     --mouse-x: 50%;
     --mouse-y: 50%;
 }
@@ -119,14 +114,14 @@ ul { list-style: none; }
 .b-r { bottom: 0; right: 0; border-width: 0 1px 1px 0; }
 
 body.hover-active #cursor-ring { width: 56px; height: 56px; }
-body.hover-active .ring-orbit { border-color: rgba(0, 255, 102, 0.4); animation: orbit 3s linear infinite reverse; }
+body.hover-active .ring-orbit { border-color: rgba(0, 255, 156, 0.4); animation: orbit 3s linear infinite reverse; }
 body.hover-active .corner { border-color: var(--neon-green); opacity: 1; width: 10px; height: 10px; }
 body.hover-active #cursor-core { background: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); }
 body.hover-active .crosshair-h, body.hover-active .crosshair-v { background: transparent; }
 
 /* --- COMMON UTILITIES --- */
 .neon-text-cyan { color: var(--neon-cyan); text-shadow: 0 0 10px rgba(0, 240, 255, 0.3); }
-.neon-text-green { color: var(--neon-green); text-shadow: 0 0 10px rgba(0, 255, 102, 0.3); }
+.neon-text-green { color: var(--neon-green); text-shadow: 0 0 10px rgba(0, 255, 156, 0.3); }
 
 /* --- PREMIUM GLASS & INTERACTIVE CARDS --- */
 .premium-card {
@@ -134,7 +129,7 @@ body.hover-active .crosshair-h, body.hover-active .crosshair-v { background: tra
     backdrop-filter: blur(16px) saturate(120%); -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--glass-border); border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 var(--glass-highlight);
-    position: relative; overflow: hidden; transform: translateZ(0); /* Hardware acceleration */
+    position: relative; overflow: hidden; transform: translateZ(0);
 }
 
 .interactive-card { transition: transform 0.6s var(--ease-cinematic), box-shadow 0.6s var(--ease-cinematic); }
@@ -156,25 +151,65 @@ body.hover-active .crosshair-h, body.hover-active .crosshair-v { background: tra
 }
 .interactive-card:hover .card-border-glow { opacity: 1; }
 
-/* --- ACCESS GATE --- */
+/* ==========================================================================
+   🔐 CINEMATIC ACCESS GATE UPGRADES
+   ========================================================================== */
 #gate-screen {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: var(--bg-void); z-index: 99999;
     display: flex; justify-content: center; align-items: center;
-    transition: opacity 1s var(--ease-cinematic), visibility 1s;
+    transition: opacity 1.5s var(--ease-cinematic), visibility 1.5s;
+    overflow: hidden;
 }
-.gate-auth-panel { text-align: center; padding: 20px; }
+
+.scan-beam {
+    position: absolute; top: -10%; left: 0; width: 100%; height: 3px;
+    background: rgba(0, 240, 255, 0.5);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 50px rgba(0, 240, 255, 0.4);
+    animation: beam-sweep 5s linear infinite; z-index: 10; pointer-events: none;
+}
+@keyframes beam-sweep {
+    0% { top: -10%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 110%; opacity: 0; }
+}
+
+.gate-auth-panel { text-align: center; padding: 20px; z-index: 2; position: relative; }
 .shield-container { position: relative; font-size: 3.5rem; color: var(--neon-cyan); margin-bottom: 30px; display: inline-block; }
 .shield-scan { position: absolute; top: -20px; left: -20px; right: -20px; bottom: -20px; border: 1px solid rgba(0,240,255,0.2); border-radius: 50%; animation: pulse-ring 2s infinite cubic-bezier(0.215, 0.61, 0.355, 1); }
 @keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
 
-.auth-title { font-family: var(--font-mono); font-size: 1.5rem; color: #fff; letter-spacing: 4px; margin-bottom: 10px; }
-.auth-subtitle { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px; }
+.auth-title { font-family: var(--font-mono); font-size: 1.8rem; color: #fff; letter-spacing: 4px; margin-bottom: 15px; transition: all 0.5s ease; }
+.auth-subtitle { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted); letter-spacing: 2px; transition: all 0.5s ease; }
 .blink { animation: blink 1.5s infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-.auth-progress { width: 100%; max-width: 250px; height: 2px; background: rgba(255,255,255,0.05); margin: 40px auto 0; position: relative; overflow: hidden; }
-.auth-fill { width: 0%; height: 100%; background: var(--neon-cyan); box-shadow: 0 0 15px var(--neon-cyan); transition: width 1.5s var(--ease-cinematic); }
+/* Glitch Title Effect (Auth Screen Only) */
+.auth-glitch { position: relative; animation: auth-flicker 4s infinite; }
+@keyframes auth-flicker {
+    0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100% { opacity: 1; }
+    20%, 21.9%, 63%, 63.9%, 65%, 69.9% { opacity: 0.4; }
+}
+.auth-glitch::before, .auth-glitch::after {
+    content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none;
+}
+.auth-glitch:hover::before { left: 2px; text-shadow: -2px 0 var(--neon-alert); animation: c-glitch-auth 0.2s infinite; opacity: 0.8; }
+.auth-glitch:hover::after { left: -2px; text-shadow: -2px 0 var(--neon-cyan); animation: c-glitch-auth 0.2s infinite reverse; opacity: 0.8; }
+@keyframes c-glitch-auth { 0% { clip: rect(20px, 9999px, 80px, 0); } 20% { clip: rect(60px, 9999px, 10px, 0); } 40% { clip: rect(30px, 9999px, 50px, 0); } 60% { clip: rect(80px, 9999px, 20px, 0); } 80% { clip: rect(10px, 9999px, 70px, 0); } 100% { clip: rect(50px, 9999px, 30px, 0); } }
+
+/* Diagnostic Terminal Logs */
+.terminal-logs {
+    font-family: var(--font-mono); font-size: 0.85rem; color: var(--neon-cyan);
+    text-align: left; margin: 25px auto; width: 100%; max-width: 380px; height: 100px;
+    background: rgba(0, 240, 255, 0.02); border-left: 2px solid var(--neon-cyan);
+    padding: 10px 15px; overflow: hidden; text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+.log-line { margin-bottom: 5px; opacity: 0.85; }
+.log-success { color: var(--neon-green); text-shadow: 0 0 12px var(--neon-green); font-weight: bold; font-size: 0.9rem; margin-top: 10px; }
+
+.auth-progress { width: 100%; max-width: 280px; height: 2px; background: rgba(255,255,255,0.05); margin: 30px auto 0; position: relative; overflow: hidden; }
+.auth-fill { width: 0%; height: 100%; background: var(--neon-green); box-shadow: 0 0 15px var(--neon-green); transition: width 1s cubic-bezier(0.19, 1, 0.22, 1); }
 
 /* --- HUD NAVIGATION --- */
 .hud-nav {
@@ -241,14 +276,58 @@ main { padding-top: 150px; padding-bottom: 50px; }
 .m-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); letter-spacing: 2px; }
 .m-value { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; color: #fff; }
 
-/* CINEMATIC GLITCH */
-.cinematic-glitch { position: relative; }
-.cinematic-glitch::before, .cinematic-glitch::after {
-    content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none;
+/* ==========================================================================
+   🎬 CINEMATIC GLITCH (HOVER EFFECT FOR NAME)
+   ========================================================================== */
+.cinematic-glitch { 
+    position: relative; 
+    display: inline-block;
 }
-.cinematic-glitch:hover::before { left: 2px; text-shadow: -2px 0 var(--neon-alert); animation: c-glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite; opacity: 0.8; }
-.cinematic-glitch:hover::after { left: -2px; text-shadow: -2px 0 var(--neon-cyan); animation: c-glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite reverse; opacity: 0.8; }
-@keyframes c-glitch { 0% { clip: rect(20px, 9999px, 80px, 0); } 20% { clip: rect(60px, 9999px, 10px, 0); } 40% { clip: rect(30px, 9999px, 50px, 0); } 60% { clip: rect(80px, 9999px, 20px, 0); } 80% { clip: rect(10px, 9999px, 70px, 0); } 100% { clip: rect(50px, 9999px, 30px, 0); } }
+
+.cinematic-glitch::before, 
+.cinematic-glitch::after {
+    content: attr(data-text); 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    pointer-events: none;
+    opacity: 0; 
+}
+
+/* Activate on hover */
+.cinematic-glitch:hover::before { 
+    left: 2px; 
+    text-shadow: -2px 0 var(--neon-alert); 
+    animation: c-glitch-1 0.2s infinite linear alternate-reverse; 
+    opacity: 0.8;
+}
+
+.cinematic-glitch:hover::after { 
+    left: -2px; 
+    text-shadow: -2px 0 var(--neon-cyan); 
+    animation: c-glitch-2 0.25s infinite linear alternate-reverse; 
+    opacity: 0.8;
+}
+
+@keyframes c-glitch-1 { 
+    0% { clip: rect(20px, 9999px, 80px, 0); } 
+    20% { clip: rect(60px, 9999px, 10px, 0); } 
+    40% { clip: rect(30px, 9999px, 50px, 0); } 
+    60% { clip: rect(80px, 9999px, 20px, 0); } 
+    80% { clip: rect(10px, 9999px, 70px, 0); } 
+    100% { clip: rect(50px, 9999px, 30px, 0); } 
+}
+
+@keyframes c-glitch-2 { 
+    0% { clip: rect(10px, 9999px, 40px, 0); } 
+    20% { clip: rect(80px, 9999px, 20px, 0); } 
+    40% { clip: rect(50px, 9999px, 80px, 0); } 
+    60% { clip: rect(20px, 9999px, 90px, 0); } 
+    80% { clip: rect(40px, 9999px, 10px, 0); } 
+    100% { clip: rect(70px, 9999px, 60px, 0); } 
+}
 
 /* --- WHOAMI (TERMINAL FORMAT) --- */
 .terminal-format { padding: 40px; font-family: var(--font-mono); font-size: 1rem; color: var(--text-primary); }
@@ -341,7 +420,7 @@ main { padding-top: 150px; padding-bottom: 50px; }
     .h-actions { flex-direction: column; width: 100%; }
     .cyber-btn { width: 100%; justify-content: center; }
     
-    .f-content { flex-direction: column; gap: 10px; text-align: center; padding-bottom: 100px; /* Space for bottom nav */ }
+    .f-content { flex-direction: column; gap: 10px; text-align: center; padding-bottom: 100px; }
 }
 
 /* --- TOUCH DEVICE GRACEFUL DEGRADATION --- */
@@ -350,5 +429,5 @@ main { padding-top: 150px; padding-bottom: 50px; }
     * { cursor: auto !important; }
     .interactive-card:hover { transform: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 var(--glass-highlight); }
     .hero-glass-console { transform: none !important; }
-    .card-border-glow { display: none !important; }
+  .card-border-glow { display: none !important; }
 }
