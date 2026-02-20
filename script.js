@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const logs = [
         "> initializing secure kernel...",
         "> validating operator signature...",
-        "> loading red_team modules...",
         "> establishing encrypted handshake..."
     ];
     let logIndex = 0;
@@ -582,3 +581,4 @@ document.addEventListener("DOMContentLoaded", () => {
     })();
 
 });
+
