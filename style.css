@@ -1,3 +1,31 @@
+/* ==========================================================================
+   🧠 NEURAL DEFENSE BACKGROUND OVERLAYS
+   ========================================================================== */
+#neural-defense-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -10; /* Strictly behind all portfolio content */
+    pointer-events: none; /* Allows mouse events to pass through to UI/Cursor */
+    background: #02040a; /* Strict Hacker Palette: Deep Navy Void */
+}
+
+#cyber-vignette-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -9; /* Just above canvas, below UI */
+    pointer-events: none;
+    /* Combines scanlines with a dark edge vignette to create cinematic depth */
+    background: 
+        radial-gradient(circle at center, transparent 20%, #02040a 140%),
+        repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 1px, rgba(0, 240, 255, 0.03) 2px, rgba(0,0,0,0) 3px);
+}
+
 /* --- CORE VARIABLES --- */
 :root {
     /* Color Palette */
@@ -59,7 +87,6 @@ ul { list-style: none; }
 }
 @keyframes grid-scroll { from { background-position: 0 0; } to { background-position: 0 60px; } }
 
-#matrix-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -3; opacity: 0.03; pointer-events: none; }
 .scanlines { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: repeating-linear-gradient(0deg, rgba(0,0,0,0) 0px, rgba(0,0,0,0) 1px, rgba(0, 240, 255, 0.02) 2px, rgba(0,0,0,0) 3px); pointer-events: none; z-index: 90; }
 .vignette { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, transparent 40%, rgba(2, 4, 10, 0.9) 100%); pointer-events: none; z-index: 91; }
 
