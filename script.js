@@ -1,9 +1,10 @@
+/* 3️⃣ Complete JavaScript background engine */
 // 🔐 SUPABASE CONFIGURATION (ADD YOUR KEYS BELOW)
 // Paste your Supabase Project URL and Publishable Key.
 // ⚠️ Never use service_role key on client-side.
 const CONFIG = {
-  SUPABASE_URL: "https://uicxnlfulmnpragakjkt.supabase.co", // <-- PASTE PROJECT URL HERE
-  SUPABASE_PUBLISHABLE_KEY: "sb_publishable_V-rKqlVrbUKlFquwDq83oA_Ai6uIu33" // <-- PASTE ANON PUBLIC KEY HERE
+    SUPABASE_URL: "https://uicxnlfulmnpragakjkt.supabase.co",
+    SUPABASE_PUBLISHABLE_KEY: "sb_publishable_V-rKqlVrbUKlFquwDq83oA_Ai6uIu33"
 };
 
 document.addEventListener("DOMContentLoaded", () => {
